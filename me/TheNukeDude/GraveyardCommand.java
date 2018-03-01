@@ -19,40 +19,48 @@ public class GraveyardCommand implements CommandExecutor {
             }
             else if (args.length >= 1)
         	{
-            	String action = args[0];
-        		if (action.equalsIgnoreCase("add"))
-        		{
-        			if (args.length >= 2)
-        			{
-        				String name = ChatColor.translateAlternateColorCodes('&', args[1]).replaceAll("_", " ");
-        				Graveyard graveyard = new Graveyard(name, (Player) sender);
-        				GraveyardManager.AddGraveyard(graveyard);
-        			}
-        		}
-        		else if (action.equalsIgnoreCase("remove"))
-        		{
-        			if (TryParse.parseInt(args[1]))
-        			{
-	        			Integer ID = Integer.parseInt(args[1]);
-	        			Graveyard graveyard = GraveyardManager.RemoveGraveyard(ID);
-	        			OutputHandler.PrintCommandInfo(p, "Deleted Graveyard, " + graveyard.getName());
-        			}
-        			else
-        			{
-        				OutputHandler.PrintError(p, "Expected ID");
-        			}
-        		}
-        		else if (action.equalsIgnoreCase("list"))
-        		{
-        			for(Graveyard graveyard: GraveyardManager.GetGraveyardsOfWorld(p.getWorld()))
-        			{
-        				OutputHandler.PrintCommandInfo(p, graveyard.getName() + OutputHandler.COMMAND + ", " + OutputHandler.HIGHLIGHT + graveyard.getID());
-        			}
-        		}
-        		else
-        		{
-        			OutputHandler.PrintError(p, "/gy list, /gy add (name), /gy remove (name)");
-        		}
+            	if (p.hasPermission("rpgraveyard.admin"))
+            	{
+	            	String action = args[0];
+	        		if (action.equalsIgnoreCase("add"))
+	        		{
+	        			if (args.length >= 2)
+	        			{
+	        				String name = ChatColor.translateAlternateColorCodes('&', args[1]).replaceAll("_", " ");
+	        				Graveyard graveyard = new Graveyard(name, (Player) sender);
+	        				GraveyardManager.AddGraveyard(graveyard);
+	        			}
+	        		}
+	        		else if (action.equalsIgnoreCase("remove"))
+	        		{
+	        			if (TryParse.parseInt(args[1]))
+	        			{
+		        			Integer ID = Integer.parseInt(args[1]);
+		        			Graveyard graveyard = GraveyardManager.RemoveGraveyard(ID);
+		        			OutputHandler.PrintCommandInfo(p, "Deleted Graveyard, " + graveyard.getName());
+	        			}
+	        			else
+	        			{
+	        				OutputHandler.PrintError(p, "Expected ID");
+	        			}
+	        		}
+	        		else if (action.equalsIgnoreCase("list"))
+	        		{
+	        			for(Graveyard graveyard: GraveyardManager.GetGraveyardsOfWorld(p.getWorld()))
+	        			{
+	        				OutputHandler.PrintCommandInfo(p, graveyard.getName() + OutputHandler.COMMAND + ", " + OutputHandler.HIGHLIGHT + graveyard.getID());
+	        			}
+	        		}
+	        		else
+	        		{
+	        			OutputHandler.PrintError(p, "/gy list, /gy add (name), /gy remove (name)");
+	        		}
+	        		//update
+            	}
+            	if (p.hasPermission("rpgraveyard.admin") || p.hasPermission("rpgraveyard.teleport"))
+            	{
+            		// tp
+            	}
         	}
         }
         return false;
