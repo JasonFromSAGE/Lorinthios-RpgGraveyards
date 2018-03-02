@@ -12,7 +12,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class GraveyardManager {
-	private static HashMap<Integer, Graveyard> graveyards = new HashMap<>();
+	public static HashMap<Integer, Graveyard> graveyards = new HashMap<>();
 	private static HashMap<World, List<Graveyard>> worldGraveyards = new HashMap<>();
 	private static int ID = 0;
 	
@@ -58,6 +58,11 @@ public class GraveyardManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static Graveyard GetGraveyardByID(int id)
+	{
+		return graveyards.get(id);
 	}
 	
 	public static void AddGraveyard(Graveyard graveyard)

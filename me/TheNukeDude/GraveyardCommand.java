@@ -14,7 +14,7 @@ public class GraveyardCommand implements CommandExecutor {
             Player p = (Player) sender;
             if (args.length == 0)
             {
-            	OutputHandler.PrintCommandInfo(p, "/gy list, /gy add (name), /gy remove (name)");
+            	OutputHandler.PrintCommandInfo(p, "/gy list, /gy add (name), /gy remove (ID), /gy teleport (ID)");
             	return false;
             }
             else if (args.length >= 1)
@@ -51,15 +51,38 @@ public class GraveyardCommand implements CommandExecutor {
 	        				OutputHandler.PrintCommandInfo(p, graveyard.getName() + OutputHandler.COMMAND + ", " + OutputHandler.HIGHLIGHT + graveyard.getID());
 	        			}
 	        		}
+	        		else if (action.equalsIgnoreCase("teleport") || action.equalsIgnoreCase("tp"))
+	        		{
+	        			if (args.length == 2)
+	        			{
+	        				if ((p.hasPermission("rpgraveyard.admin") || p.hasPermission("rpgraveyard.teleport")))
+		        			{
+			        			if (TryParse.parseInt(args[1]))
+			        			{
+				        			Integer id = Integer.parseInt(args[1]);
+			        				Graveyard graveyard = GraveyardManager.GetGraveyardByID(id);
+			        				p.teleport(graveyard.getLocation());
+			        			}
+			        			else
+			        			{
+			        				OutputHandler.PrintError(p, "Please use the graveyard's ID.");
+			        			}
+		        			}
+		        			else 
+		        			{
+		        				OutputHandler.PrintError(p, "Insufficient Permission.");
+		        			}
+	        			}	
+	        			else
+	        			{
+	        				OutputHandler.PrintError(p, "Please use the graveyard's ID.");
+	        			}
+	        		}
 	        		else
 	        		{
-	        			OutputHandler.PrintError(p, "/gy list, /gy add (name), /gy remove (name)");
+	        			OutputHandler.PrintError(p, "/gy list, /gy add (name), /gy remove (ID), /gy teleport (ID)");
 	        		}
 	        		//update
-            	}
-            	if (p.hasPermission("rpgraveyard.admin") || p.hasPermission("rpgraveyard.teleport"))
-            	{
-            		// tp
             	}
         	}
         }
