@@ -5,7 +5,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 public class GraveyardListener implements Listener{
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onPlayerRespawn(PlayerRespawnEvent e)
 	{
 		Graveyard selected = null;

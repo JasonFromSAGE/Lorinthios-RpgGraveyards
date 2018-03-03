@@ -124,6 +124,7 @@ public class GraveyardManager {
 			worldGraveyards.put(w, graveyards);
 		}
 	}
+
 	public static Integer GetNextID()
 	{
 		ID ++;
