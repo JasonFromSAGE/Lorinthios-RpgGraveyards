@@ -8,18 +8,32 @@ public class RPGraveyards extends JavaPlugin {
 	@Override
 	public void onEnable() 
 	{
-		getConfig().options().copyDefaults(true);
-        saveConfig();
 		this.getLogger().info("Plugin has activated! :)");
-		getCommand("gy").setExecutor(new GraveyardCommand());
-		graveyardManager.loadGraveyards(this);
-		registerListeners();
+		load();
 	}
+
 	@Override
 	public void onDisable()
 	{
 		graveyardManager.saveGraveyards(this);
 	}
+
+	private void load(){
+		getConfig().options().copyDefaults(true);
+		saveConfig();
+		graveyardManager.loadGraveyards(this);
+		registerPlugin();
+	}
+
+	private void registerPlugin(){
+		registerCommands();
+		registerListeners();
+	}
+
+	private void registerCommands(){
+		getCommand("gy").setExecutor(new GraveyardCommand());
+	}
+
 	private void registerListeners()
 	{
 		getServer().getPluginManager().registerEvents(new GraveyardListener(), this);
