@@ -1,4 +1,4 @@
-package me.TheNukeDude;
+package me.TheNukeDude.Managers;
 
 import java.io.File;
 import java.io.IOException;
@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import me.TheNukeDude.Data.Graveyard;
+import me.TheNukeDude.RPGraveyards;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;

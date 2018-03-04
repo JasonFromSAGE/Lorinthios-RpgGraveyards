@@ -1,5 +1,8 @@
 package me.TheNukeDude;
 
+import me.TheNukeDude.Commands.GraveyardCommand;
+import me.TheNukeDude.Listeners.GraveyardListener;
+import me.TheNukeDude.Managers.GraveyardManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class RPGraveyards extends JavaPlugin {

@@ -1,4 +1,4 @@
-package me.TheNukeDude;
+package me.TheNukeDude.Util;
 
 import org.bukkit.Material;
 
