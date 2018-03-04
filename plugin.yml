@@ -1,0 +1,7 @@
+name: Graveyards
+description: Sets graveyard spawnpoints.
+version: 1.0.0
+main: me.TheNukeDude.RPGraveyards
+commands:
+  gy:
+    aliases: [graveyard]

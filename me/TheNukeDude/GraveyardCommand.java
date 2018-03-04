@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class GraveyardCommand implements CommandExecutor {
 
+	@SuppressWarnings("serial")
 	private ArrayList<String> commands = new ArrayList<String>(){{
 		add("/gy list");
 		add("/gy add (name)");
@@ -37,7 +38,7 @@ public class GraveyardCommand implements CommandExecutor {
 			else if (action.equalsIgnoreCase("teleport") || action.equalsIgnoreCase("tp"))
 				teleportToGraveyard(player, args);
 			else
-				OutputHandler.PrintError(player, "/gy list, /gy add (name), /gy remove (ID), /gy teleport (ID)");
+				printOutCommands(player);
 		}
 		else
 			printOutCommands(player);
@@ -94,10 +95,14 @@ public class GraveyardCommand implements CommandExecutor {
 					Integer id = Integer.parseInt(args[1]);
 					Graveyard graveyard = GraveyardManager.GetGraveyardByID(id);
 					player.teleport(graveyard.getLocation());
-				} else {
+				} 
+				else 
+				{
 					OutputHandler.PrintError(player, "Please use the graveyard's ID.");
 				}
-			} else{
+			} 
+			else
+			{
 				OutputHandler.PrintError(player, "Usage : /gy teleport (ID)");
 			}
 		}
