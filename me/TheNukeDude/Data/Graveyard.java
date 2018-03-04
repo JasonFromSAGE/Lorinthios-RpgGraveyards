@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import javax.management.openmbean.InvalidKeyException;
 
 import me.TheNukeDude.Managers.GraveyardManager;
+import me.TheNukeDude.RPGraveyards;
+import me.TheNukeDude.Tasks.GraveyardRespawnParticleTask;
 import me.TheNukeDude.Util.OutputHandler;
 import me.TheNukeDude.Util.TryParse;
 import org.bukkit.Bukkit;
@@ -18,7 +20,7 @@ public class Graveyard {
     private String name; // Name of the graveyard
     private ArrayList<String> playersDiscovered = new ArrayList<>(); // Who has discovered this graveyard?
     private double distanceToDiscover; // How close does the player need to be to 'discover' this graveyard
-    //private int levelRequired; // Level required to respawn here (Plugin Hooks)
+    private double distanceToDiscoverSquared;//private int levelRequired; // Level required to respawn here (Plugin Hooks)
 
     //Constructor
     public Graveyard(String name, Player player)
@@ -26,6 +28,8 @@ public class Graveyard {
     	this.id = GraveyardManager.GetNextID();
         this.name = name;
         this.location = player.getLocation();
+        this.distanceToDiscover = 50;
+        this.distanceToDiscoverSquared = 50 * 50;
         OutputHandler.PrintCommandInfo(player, "Graveyard was created with the name, " + name);
     }
 
@@ -36,12 +40,13 @@ public class Graveyard {
         {
             this.id = Integer.parseInt(id);
             String path = "Graveyards." + id + ".";
-            this.name = config.getString(path + "Name");
+            name = config.getString(path + "Name");
             String locationPath = path + "Location.";
-            this.location = new Location(Bukkit.getWorld(config.getString(locationPath + "WorldName")),
+            location = new Location(Bukkit.getWorld(config.getString(locationPath + "WorldName")),
             		config.getDouble(locationPath + "X"), config.getDouble(locationPath + "Y"), config.getDouble(locationPath + "Z"), (float) config.getDouble(locationPath + "YAW"), (float) config.getDouble(locationPath + "Z"));
-            this.distanceToDiscover = config.getDouble(path + "Distance");
-            this.playersDiscovered = (ArrayList<String>) config.getStringList(path + "PlayerList");
+            distanceToDiscover = config.getDouble(path + "Distance");
+            distanceToDiscoverSquared = distanceToDiscover * distanceToDiscover;
+            playersDiscovered = (ArrayList<String>) config.getStringList(path + "PlayerList");
         }
         else
             throw new InvalidKeyException("Cannot have non-integer id for Graveyard"); 
@@ -63,7 +68,14 @@ public class Graveyard {
     	config.set(path + "Distance", distanceToDiscover);
     	config.set(path + "PlayerList", playersDiscovered);
     }
-    
+
+    public void respawn(Player player){
+        player.teleport(location);
+        OutputHandler.PrintInfo(player, "You have respawned at " + name);
+        GraveyardRespawnParticleTask task = new GraveyardRespawnParticleTask(player);
+        task.runTaskTimer(RPGraveyards.instance, 0, 1);
+    }
+
     public int getID(){
     	return id;
     }
@@ -87,13 +99,26 @@ public class Graveyard {
     }
 
     public boolean playerHasDiscovered(Player player){
-       // return playersDiscovered.contains(player.getUniqueId().toString());
-    	return true;
+        if(RPGraveyards.properties.useDiscovery)
+            return playersDiscovered.contains(player.getUniqueId().toString());
+        else
+        	return true;
+    }
+
+    public void checkPlayerDiscovery(Player player){
+        if(RPGraveyards.properties.useDiscovery){
+            if(playerHasDiscovered(player))
+                return;
+
+            if(player.getLocation().distanceSquared(location) <= distanceToDiscoverSquared){
+                addPlayerDiscovered(player);
+            }
+        }
     }
 
     public Graveyard addPlayerDiscovered(Player player){
         playersDiscovered.add(player.getUniqueId().toString());
-        OutputHandler.PrintInfo(player, "You discovered, " + name + OutputHandler.INFO + "!");
+        OutputHandler.PrintInfo(player, "You have discovered, " + name + OutputHandler.INFO + "!");
         return this;
     }
 

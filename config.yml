@@ -1,0 +1,3 @@
+useRespawnGUI: true # Use the Graveyard GUI to teleport to graveyards
+useDiscovery: true # Do you want your graveyards to be discoverable?
+respawnParticleEffect: END_ROD

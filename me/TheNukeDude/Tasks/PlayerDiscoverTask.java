@@ -1,0 +1,40 @@
+package me.TheNukeDude.Tasks;
+
+import me.TheNukeDude.Data.Graveyard;
+import me.TheNukeDude.Managers.GraveyardManager;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.List;
+
+public class PlayerDiscoverTask extends BukkitRunnable {
+    private Player player;
+    private World world;
+    private List<Graveyard> graveyards;
+    private int index = 0;
+
+    public PlayerDiscoverTask(Player player){
+        this.player = player;
+    }
+
+    @Override
+    public void run() {
+        if(!player.isOnline())
+            this.cancel();
+
+        if(world != player.getWorld()) {
+            world = player.getWorld();
+            graveyards = GraveyardManager.GetGraveyardsOfWorld(world);
+        }
+
+        if(index >= graveyards.size()){
+            index = 0;
+        }
+        if(index < graveyards.size()){
+            Graveyard graveyard = graveyards.get(index);
+            graveyard.checkPlayerDiscovery(player);
+        }
+        index++;
+    }
+}
