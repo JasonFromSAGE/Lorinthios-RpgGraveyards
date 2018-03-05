@@ -131,7 +131,18 @@ public class Graveyard {
     }
 
     public void setDistanceToDiscover(double distanceToDiscover){
+
         this.distanceToDiscover = distanceToDiscover;
+        this.distanceToDiscoverSquared = distanceToDiscover * distanceToDiscover;
+    }
+
+    public void printInfo(Player player){
+        OutputHandler.PrintCommandInfo(player, "ID : " + OutputHandler.HIGHLIGHT + getID());
+        OutputHandler.PrintCommandInfo(player, "Name : " + OutputHandler.HIGHLIGHT + getName());
+        OutputHandler.PrintCommandInfo(player, "World : " + OutputHandler.HIGHLIGHT + getLocation().getWorld().getName());
+        OutputHandler.PrintCommandInfo(player, String.format("Location : " + OutputHandler.HIGHLIGHT + " <" + getLocation().getBlockX() + ", " + getLocation().getBlockY() + ", " + getLocation().getBlockZ() + ">"));
+        OutputHandler.PrintCommandInfo(player, "Distance : " + OutputHandler.HIGHLIGHT + ((int) getLocation().distance(player.getLocation())));
+        OutputHandler.PrintCommandInfo(player, "DiscoveryDistance : " + OutputHandler.HIGHLIGHT + distanceToDiscover);
     }
 
 }

@@ -64,7 +64,9 @@ public class GraveyardManager {
 	
 	public static Graveyard GetGraveyardByID(int id)
 	{
-		return graveyards.get(id);
+		if(graveyards.containsKey(id))
+			return graveyards.get(id);
+		return null;
 	}
 	
 	public static void AddGraveyard(Graveyard graveyard)
@@ -75,9 +77,12 @@ public class GraveyardManager {
 	
 	public static Graveyard RemoveGraveyard(Integer ID)
 	{
-		Graveyard graveyard = graveyards.remove(ID);
-		RemoveGraveyardFromWorld(graveyard);
-		return graveyard;
+	    if(graveyards.containsKey(ID)){
+            Graveyard graveyard = graveyards.remove(ID);
+            RemoveGraveyardFromWorld(graveyard);
+            return graveyard;
+        }
+		return null;
 	}
 	
 	private static void RemoveGraveyardFromWorld(Graveyard graveyard)
@@ -111,7 +116,21 @@ public class GraveyardManager {
 		//Return the ordered list of graveyards
 		return ordered;
 	}
-	
+
+	public static Graveyard GetClosestGraveyard(Location location) {
+        List<Graveyard> graveyards = worldGraveyards.get(location.getWorld());
+        double distance = Double.MAX_VALUE;
+        Graveyard closest = null;
+        for (Graveyard graveyard : graveyards){
+            double currentDistance = location.distanceSquared(graveyard.getLocation());
+            if (currentDistance < distance) {
+                closest = graveyard;
+                distance = currentDistance;
+            }
+        }
+        return closest;
+    }
+
 	private static void AddGraveyardToWorld(Graveyard graveyard)
 	{
 		World w = graveyard.getLocation().getWorld();

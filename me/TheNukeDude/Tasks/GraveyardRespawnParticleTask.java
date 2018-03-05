@@ -14,6 +14,7 @@ public class GraveyardRespawnParticleTask extends BukkitRunnable {
     private double rotationOffset = Math.PI * 2.0 / 3.0;
     private double height = 0.0f;
     private double heightChange = 0.05;
+    private double duration = 80;
     private boolean up = true;
     private int count = 0;
     private Player player;
@@ -42,7 +43,7 @@ public class GraveyardRespawnParticleTask extends BukkitRunnable {
         location.getWorld().spawnParticle(particle, c, 0);
 
         count++;
-        if(count > 100)
+        if(count > duration)
             cancel();
     }
 
