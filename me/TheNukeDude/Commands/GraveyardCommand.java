@@ -20,7 +20,7 @@ public class GraveyardCommand implements CommandExecutor {
 		add("/gy add <name> [discoverDistance]");
 		add("/gy set <id> [name]"); //<> = required arg. [] = optional arg
 		add("/gy remove <id>");
-		add("/gy tp <id>");
+		add("/gy tp [id]");
 		add("/gy info [id]");
 	}};
 

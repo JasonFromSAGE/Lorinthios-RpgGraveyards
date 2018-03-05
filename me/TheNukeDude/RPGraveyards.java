@@ -4,8 +4,11 @@ import me.TheNukeDude.Commands.GraveyardCommand;
 import me.TheNukeDude.Data.Properties;
 import me.TheNukeDude.Listeners.GraveyardListener;
 import me.TheNukeDude.Managers.GraveyardManager;
+import me.TheNukeDude.Tasks.PlayerDiscoverTask;
+import org.bukkit.Bukkit;
 import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class RPGraveyards extends JavaPlugin {
@@ -19,6 +22,9 @@ public class RPGraveyards extends JavaPlugin {
 		this.getLogger().info("Plugin has activated! :)");
 		load();
 		instance = this;
+
+		for(Player player : Bukkit.getServer().getOnlinePlayers())
+			new PlayerDiscoverTask(player);
 	}
 
 	@Override

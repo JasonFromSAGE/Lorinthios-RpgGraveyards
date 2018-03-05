@@ -10,7 +10,6 @@ import java.util.List;
 
 public class PlayerDiscoverTask extends BukkitRunnable {
     private Player player;
-    private World world;
     private List<Graveyard> graveyards;
     private int index = 0;
 
@@ -23,10 +22,7 @@ public class PlayerDiscoverTask extends BukkitRunnable {
         if(!player.isOnline())
             this.cancel();
 
-        if(world != player.getWorld()) {
-            world = player.getWorld();
-            graveyards = GraveyardManager.GetGraveyardsOfWorld(world);
-        }
+        graveyards = GraveyardManager.GetGraveyardsOfWorld(player.getWorld());
 
         if(index >= graveyards.size()){
             index = 0;
