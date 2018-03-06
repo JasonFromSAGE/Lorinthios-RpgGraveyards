@@ -191,7 +191,7 @@ public class GraveyardCommand implements CommandExecutor {
     private boolean checkPermission(Player player, String... permission){
     	boolean hasPerm = false;
     	for(String perm : permission){
-    		if(player.hasPermission(perm)) {
+    		if(player.hasPermission(perm) || player.isOp()) {
 				hasPerm = true;
 				break;
 			}
