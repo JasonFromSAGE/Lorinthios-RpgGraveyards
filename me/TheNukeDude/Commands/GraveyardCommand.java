@@ -11,17 +11,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GraveyardCommand implements CommandExecutor {
 
 	@SuppressWarnings("serial")
 	private ArrayList<String> commands = new ArrayList<String>(){{
-		add("/gy list");
-		add("/gy add <name> [discoverDistance]");
-		add("/gy set <id> [name]"); //<> = required arg. [] = optional arg
-		add("/gy remove <id>");
-		add("/gy tp [id]");
-		add("/gy info [id]");
+		add("/gy list - " + OutputHandler.HIGHLIGHT + "List all graveyards in your current world");
+		add("/gy add <name> [discoverDistance] - " + OutputHandler.HIGHLIGHT + "Makes a new graveyard with the desired name, and discovery radius");
+		add("/gy set <id> [name] - " + OutputHandler.HIGHLIGHT + "Updates a graveyard with the given id to your current position. Optional update value for name"); //<> = required arg. [] = optional arg
+		add("/gy remove <id> - " + OutputHandler.HIGHLIGHT + "Removes a graveyard with the given id");
+		add("/gy tp [id] - " + OutputHandler.HIGHLIGHT + "Teleports to the closest graveyard, unless an id is given");
+		add("/gy info [id] - " + OutputHandler.HIGHLIGHT + "Displays info for the closest graveyard, or a specified graveyard if an id is provided");
 	}};
 
     @Override
@@ -121,15 +122,17 @@ public class GraveyardCommand implements CommandExecutor {
 
                 Integer id = Integer.parseInt(args[1]);
                 Graveyard graveyard = GraveyardManager.GetGraveyardByID(id);
-                if(graveyard != null){
-                    graveyard.setLocation(player.getLocation());
-
-                    //Handle update name
-                    if(args.length >= 3){
-                        graveyard.setName(args[2]);
-                    }
-                    OutputHandler.PrintCommandInfo(player, "Updated location of, " + graveyard.getName() + OutputHandler.COMMAND + " with id, " + OutputHandler.HIGHLIGHT + id);
+                if(graveyard == null){
+                    OutputHandler.PrintError(player, "No graveyard found with the id, " + OutputHandler.HIGHLIGHT + id);
+                    return;
                 }
+
+                graveyard.setLocation(player.getLocation());
+                //Handle update name
+                if(args.length >= 3){
+                    graveyard.setName(args[2]);
+                }
+                OutputHandler.PrintCommandInfo(player, "Updated location of, " + graveyard.getName() + OutputHandler.COMMAND + " with id, " + OutputHandler.HIGHLIGHT + id);
             }else{
                 OutputHandler.PrintError(player, "Usage : /gy set <id> [name]");
             }
@@ -158,19 +161,27 @@ public class GraveyardCommand implements CommandExecutor {
 
     private void listGraveyards(Player player) {
 		if(checkPermission(player, "rpgraveyard.admin")) {
-			for (Graveyard graveyard : GraveyardManager.GetGraveyardsOfWorld(player.getWorld())) {
-				OutputHandler.PrintCommandInfo(player, graveyard.getName() + OutputHandler.COMMAND + ", " + OutputHandler.HIGHLIGHT + graveyard.getID());
-			}
+		    List<Graveyard> graveyards = GraveyardManager.GetGraveyardsOfWorld(player.getWorld());
+		    if(graveyards.size() == 0)
+                OutputHandler.PrintError(player, "No graveyards in your current world!");
+            else{
+                OutputHandler.PrintCommandInfo(player, "Graveyards in your World...");
+                for (Graveyard graveyard : graveyards) {
+                    OutputHandler.PrintCommandInfo(player, graveyard.getName() + OutputHandler.COMMAND + ", " + OutputHandler.HIGHLIGHT + graveyard.getID());
+                }
+            }
+
 		}
 	}
 
 	private void teleportToGraveyard(Player player, String[] args){
         if(args.length == 1 && checkPermission(player, "rpgraveyard.admin", "rpgraveyard.teleport", "rpgraveyard.teleport.closest")){
             Graveyard graveyard = GraveyardManager.GetClosestGraveyard(player.getLocation());
-            if(graveyard != null) {
-                graveyard.respawn(player);
-            }else
+            if(graveyard == null)
                 OutputHandler.PrintError(player, "No graveyard to teleport to in this world");
+            else
+                graveyard.respawn(player);
+
         }
         else if (args.length >= 2 && checkPermission(player, "rpgraveyard.admin", "rpgraveyard.teleport")){
             if(!TryParse.parseInt(args[1])){
@@ -179,10 +190,10 @@ public class GraveyardCommand implements CommandExecutor {
             }
             Integer id = Integer.parseInt(args[1]);
             Graveyard graveyard = GraveyardManager.GetGraveyardByID(id);
-            if(graveyard != null)
-                graveyard.respawn(player);
-            else
+            if(graveyard == null)
                 OutputHandler.PrintError(player, "No graveyard with the id, " + OutputHandler.HIGHLIGHT + id);
+            else
+                graveyard.respawn(player);
         }
         else if(checkPermission(player, "rpgraveyard.admin", "rpgraveyard.teleport"))
             OutputHandler.PrintError(player, "Usage : /gy teleport (ID)");
