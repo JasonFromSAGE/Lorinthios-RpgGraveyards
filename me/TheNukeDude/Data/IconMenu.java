@@ -54,14 +54,14 @@ public class IconMenu implements Listener {
         return inv;
     }
 
-    public IconMenu close(Player p) {
+    private IconMenu close(Player p) {
         if (p.getOpenInventory().getTitle().equals(name))
             p.closeInventory();
 
         return this;
     }
 
-    public List<Player> getViewers() {
+    private List<Player> getViewers() {
         List<Player> viewers = new ArrayList<Player>();
         for (String s : viewing)
             viewers.add(Bukkit.getPlayer(s));
@@ -90,7 +90,7 @@ public class IconMenu implements Listener {
         return this;
     }
 
-    public Row getRowFromSlot(int slot) {
+    private Row getRowFromSlot(int slot) {
         return new Row(slot / 9, items);
     }
 
@@ -106,7 +106,7 @@ public class IconMenu implements Listener {
         private ItemStack[] rowItems = new ItemStack[9];
         int row;
 
-        public Row(int row, ItemStack[] items) {
+        private Row(int row, ItemStack[] items) {
             this.row = row;
             int j = 0;
             try{
@@ -128,7 +128,7 @@ public class IconMenu implements Listener {
             return rowItems[item] == null ? new ItemStack(Material.AIR) : rowItems[item];
         }
 
-        public int getRow() {
+        private int getRow() {
             return row;
         }
     }

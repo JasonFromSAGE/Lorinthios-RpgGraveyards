@@ -14,7 +14,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class GraveyardManager {
-	public static HashMap<Integer, Graveyard> graveyards = new HashMap<>();
+	private static HashMap<Integer, Graveyard> graveyards = new HashMap<>();
 	private static HashMap<World, List<Graveyard>> worldGraveyards = new HashMap<>();
 	private static int ID = 0;
 	
@@ -24,11 +24,14 @@ public class GraveyardManager {
 		{
 			return worldGraveyards.get(world);
 		}
-		return new ArrayList<Graveyard>();
+		return new ArrayList<>();
 	}
 	
 	public void loadGraveyards(RPGraveyards plugin)
 	{
+		graveyards = new HashMap<>();
+		worldGraveyards = new HashMap<>();
+
 		File file = new File(plugin.getDataFolder(), "graveyards.yml");
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 		ID = config.getInt("ID");
@@ -96,25 +99,28 @@ public class GraveyardManager {
 	
 	public static ArrayList<Graveyard> GetClosestGraveyards(Location location)
 	{
-		List<Graveyard> graveyards = worldGraveyards.get(location.getWorld());
-		//Store graveyard based on distance
-		HashMap<Double, Graveyard> distances = new HashMap<>();
-		for(Graveyard graveyard : graveyards){
-		    distances.put(location.distanceSquared(graveyard.getLocation()), graveyard);
-		}
+	    if(worldGraveyards.containsKey(location.getWorld())){
+            List<Graveyard> graveyards = worldGraveyards.get(location.getWorld());
+            //Store graveyard based on distance
+            HashMap<Double, Graveyard> distances = new HashMap<>();
+            for(Graveyard graveyard : graveyards){
+                distances.put(location.distanceSquared(graveyard.getLocation()), graveyard);
+            }
 
-		//Get all the keys
-		List<Double> keys = new ArrayList<Double>(distances.keySet());
-		//Sort the keys by value ascending
-		Collections.sort(keys);
+            //Get all the keys
+            List<Double> keys = new ArrayList<>(distances.keySet());
+            //Sort the keys by value ascending
+            Collections.sort(keys);
 
-		//Make our array of graveyards in order from closest to furthest
-		ArrayList<Graveyard> ordered = new ArrayList<>();
-		for(Double key : keys)
-		    ordered.add(distances.get(key));
-		    
-		//Return the ordered list of graveyards
-		return ordered;
+            //Make our array of graveyards in order from closest to furthest
+            ArrayList<Graveyard> ordered = new ArrayList<>();
+            for(Double key : keys)
+                ordered.add(distances.get(key));
+
+            //Return the ordered list of graveyards
+            return ordered;
+        }
+        return new ArrayList<>();
 	}
 
 	public static Graveyard GetClosestGraveyard(Location location) {
@@ -140,7 +146,7 @@ public class GraveyardManager {
 		}
 		else
 		{
-			List<Graveyard> graveyards = new ArrayList<Graveyard>();
+			List<Graveyard> graveyards = new ArrayList<>();
 			graveyards.add(graveyard);
 			worldGraveyards.put(w, graveyards);
 		}

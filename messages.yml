@@ -1,0 +1,9 @@
+Event:
+  Respawn: '&aYou have respawned at {graveyard}'
+  Discover: '&aYou have discovered, {graveyard}&a!'
+Ui:
+  Title: '&eGraveyard Respawn'
+  TeleportTo: '&aTeleport to {graveyard}'
+  Stay: '&cStay here'
+Command:
+  GraveyardCreated: "&aGraveyard was created with the name, {graveyard}"

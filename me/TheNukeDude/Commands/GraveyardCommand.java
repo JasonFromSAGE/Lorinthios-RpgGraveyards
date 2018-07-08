@@ -2,6 +2,7 @@ package me.TheNukeDude.Commands;
 
 import me.TheNukeDude.Data.Graveyard;
 import me.TheNukeDude.Managers.GraveyardManager;
+import me.TheNukeDude.RPGraveyards;
 import me.TheNukeDude.Util.OutputHandler;
 import me.TheNukeDude.Util.TryParse;
 import org.bukkit.ChatColor;
@@ -23,6 +24,7 @@ public class GraveyardCommand implements CommandExecutor {
 		add("/gy remove <id> - " + OutputHandler.HIGHLIGHT + "Removes a graveyard with the given id");
 		add("/gy tp [id] - " + OutputHandler.HIGHLIGHT + "Teleports to the closest graveyard, unless an id is given");
 		add("/gy info [id] - " + OutputHandler.HIGHLIGHT + "Displays info for the closest graveyard, or a specified graveyard if an id is provided");
+        add("/gy reload - " + OutputHandler.HIGHLIGHT + "Saves / Loads the plugin ");
 	}};
 
     @Override
@@ -48,6 +50,8 @@ public class GraveyardCommand implements CommandExecutor {
 			    printInfo(player, args);
 			else if (action.equalsIgnoreCase("teleport") || action.equalsIgnoreCase("tp"))
 				teleportToGraveyard(player, args);
+			else if(action.equalsIgnoreCase("reload"))
+			    reloadGraveyards(player);
 			else
 				printOutCommands(player);
 		}
@@ -198,6 +202,12 @@ public class GraveyardCommand implements CommandExecutor {
         else if(checkPermission(player, "rpgraveyard.admin", "rpgraveyard.teleport"))
             OutputHandler.PrintError(player, "Usage : /gy teleport (ID)");
 	}
+
+	private void reloadGraveyards(Player player){
+        RPGraveyards.instance.onDisable();
+        RPGraveyards.instance.onEnable();
+        OutputHandler.PrintCommandInfo(player, "Plugin reloaded");
+    }
 
     private boolean checkPermission(Player player, String... permission){
     	boolean hasPerm = false;

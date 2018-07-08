@@ -6,6 +6,7 @@ import javax.management.openmbean.InvalidKeyException;
 import me.TheNukeDude.Managers.GraveyardManager;
 import me.TheNukeDude.RPGraveyards;
 import me.TheNukeDude.Tasks.GraveyardRespawnParticleTask;
+import me.TheNukeDude.Util.MessageHelper;
 import me.TheNukeDude.Util.OutputHandler;
 import me.TheNukeDude.Util.TryParse;
 import org.bukkit.Bukkit;
@@ -30,7 +31,7 @@ public class Graveyard {
         this.location = player.getLocation();
         this.distanceToDiscover = 50;
         this.distanceToDiscoverSquared = 50 * 50;
-        OutputHandler.PrintCommandInfo(player, "Graveyard was created with the name, " + name);
+        OutputHandler.PrintCommandInfo(player, MessageHelper.Command_GraveyardCreated.replace("{graveyard}", getName()));
     }
 
     //To load from config
@@ -71,7 +72,7 @@ public class Graveyard {
 
     public void respawn(Player player){
         player.teleport(location);
-        OutputHandler.PrintInfo(player, "You have respawned at " + name);
+        OutputHandler.PrintInfo(player, MessageHelper.Event_Respawn.replace("{graveyard}", getName()));
         GraveyardRespawnParticleTask task = new GraveyardRespawnParticleTask(player);
         task.runTaskTimer(RPGraveyards.instance, 0, 1);
     }
@@ -116,10 +117,9 @@ public class Graveyard {
         }
     }
 
-    public Graveyard addPlayerDiscovered(Player player){
+    private void addPlayerDiscovered(Player player){
         playersDiscovered.add(player.getUniqueId().toString());
-        OutputHandler.PrintInfo(player, "You have discovered, " + name + OutputHandler.INFO + "!");
-        return this;
+        OutputHandler.PrintInfo(player, MessageHelper.Event_Discover.replace("{graveyard}", getName()));
     }
 
     public double getDistanceToDiscover(){
@@ -140,7 +140,7 @@ public class Graveyard {
         OutputHandler.PrintCommandInfo(player, "ID : " + OutputHandler.HIGHLIGHT + getID());
         OutputHandler.PrintCommandInfo(player, "Name : " + OutputHandler.HIGHLIGHT + getName());
         OutputHandler.PrintCommandInfo(player, "World : " + OutputHandler.HIGHLIGHT + getLocation().getWorld().getName());
-        OutputHandler.PrintCommandInfo(player, String.format("Location : " + OutputHandler.HIGHLIGHT + " <" + getLocation().getBlockX() + ", " + getLocation().getBlockY() + ", " + getLocation().getBlockZ() + ">"));
+        OutputHandler.PrintCommandInfo(player, "Location : " + OutputHandler.HIGHLIGHT + " <" + getLocation().getBlockX() + ", " + getLocation().getBlockY() + ", " + getLocation().getBlockZ() + ">");
         OutputHandler.PrintCommandInfo(player, "Distance : " + OutputHandler.HIGHLIGHT + ((int) getLocation().distance(player.getLocation())));
         OutputHandler.PrintCommandInfo(player, "DiscoveryDistance : " + OutputHandler.HIGHLIGHT + distanceToDiscover);
     }

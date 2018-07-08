@@ -5,11 +5,18 @@ import me.TheNukeDude.Data.Properties;
 import me.TheNukeDude.Listeners.GraveyardListener;
 import me.TheNukeDude.Managers.GraveyardManager;
 import me.TheNukeDude.Tasks.PlayerDiscoverTask;
+import me.TheNukeDude.Util.MessageHelper;
+import me.TheNukeDude.Util.ResourceHelper;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.lang.reflect.Field;
 
 public class RPGraveyards extends JavaPlugin {
 	private static GraveyardManager graveyardManager = new GraveyardManager();
@@ -19,7 +26,7 @@ public class RPGraveyards extends JavaPlugin {
 	@Override
 	public void onEnable() 
 	{
-		this.getLogger().info("Plugin has activated! :)");
+		firstLoad();
 		load();
 		instance = this;
 
@@ -37,6 +44,7 @@ public class RPGraveyards extends JavaPlugin {
 		getConfig().options().copyDefaults(true);
 		saveConfig();
 		loadConfig();
+		loadStaticHelper(MessageHelper.class, getFileConfig("messages.yml"), true);
 		graveyardManager.loadGraveyards(this);
 		registerPlugin();
 	}
@@ -48,9 +56,22 @@ public class RPGraveyards extends JavaPlugin {
 		properties.respawnParticleEffect = Particle.valueOf(config.getString("respawnParticleEffect"));
 	}
 
+    private void firstLoad(){
+        try{
+            ResourceHelper.copy(getResource("messages.yml"), new File(getDataFolder(), "messages.yml"));
+        }
+        catch(Exception exc){
+            exc.printStackTrace();
+        }
+    }
+
 	private void registerPlugin(){
 		registerCommands();
 		registerListeners();
+	}
+
+	private FileConfiguration getFileConfig(String fileName){
+		return YamlConfiguration.loadConfiguration(new File(getDataFolder(), fileName));
 	}
 
 	private void registerCommands(){
@@ -60,6 +81,22 @@ public class RPGraveyards extends JavaPlugin {
 	private void registerListeners()
 	{
 		getServer().getPluginManager().registerEvents(new GraveyardListener(), this);
+	}
+
+	private void loadStaticHelper(Class clazz, FileConfiguration config, boolean allowColorCodes){
+		for(Field field : clazz.getFields()){
+			field.setAccessible(true);
+			try{
+				Object value = config.get(field.getName().replace("_", "."));
+				if(value instanceof String && allowColorCodes)
+					value = ChatColor.translateAlternateColorCodes('&', (String) value);
+				if(value != null)
+					field.set(clazz, value);
+			}
+			catch(Exception excep){
+				excep.printStackTrace();
+			}
+		}
 	}
 
 }
