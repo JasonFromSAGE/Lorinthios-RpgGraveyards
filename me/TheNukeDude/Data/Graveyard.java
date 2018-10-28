@@ -100,14 +100,14 @@ public class Graveyard {
     }
 
     public boolean playerHasDiscovered(Player player){
-        if(RPGraveyards.properties.useDiscovery)
+        if(RPGraveyards.properties.UseDiscovery)
             return playersDiscovered.contains(player.getUniqueId().toString());
         else
         	return true;
     }
 
     public void checkPlayerDiscovery(Player player){
-        if(RPGraveyards.properties.useDiscovery){
+        if(RPGraveyards.properties.UseDiscovery){
             if(playerHasDiscovered(player))
                 return;
 

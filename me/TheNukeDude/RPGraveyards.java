@@ -2,9 +2,12 @@ package me.TheNukeDude;
 
 import me.TheNukeDude.Commands.GraveyardCommand;
 import me.TheNukeDude.Data.Properties;
+import me.TheNukeDude.Listeners.DeathChestListener;
 import me.TheNukeDude.Listeners.GraveyardListener;
+import me.TheNukeDude.Managers.DeathChestManager;
 import me.TheNukeDude.Managers.GraveyardManager;
 import me.TheNukeDude.Tasks.PlayerDiscoverTask;
+import me.TheNukeDude.Util.ConfigHelper;
 import me.TheNukeDude.Util.MessageHelper;
 import me.TheNukeDude.Util.ResourceHelper;
 import org.bukkit.Bukkit;
@@ -17,18 +20,21 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 
 public class RPGraveyards extends JavaPlugin {
-	private static GraveyardManager graveyardManager = new GraveyardManager();
+
+	private static GraveyardManager graveyardManager;
+	private static DeathChestManager deathChestManager;
 	public static RPGraveyards instance;
-	public static Properties properties;
-	
+	public static Properties properties = new Properties();
+
 	@Override
 	public void onEnable() 
 	{
+		instance = this;
 		firstLoad();
 		load();
-		instance = this;
 
 		for(Player player : Bukkit.getServer().getOnlinePlayers())
 			new PlayerDiscoverTask(player);
@@ -38,6 +44,7 @@ public class RPGraveyards extends JavaPlugin {
 	public void onDisable()
 	{
 		graveyardManager.saveGraveyards(this);
+		deathChestManager.save(false);
 	}
 
 	private void load(){
@@ -45,15 +52,65 @@ public class RPGraveyards extends JavaPlugin {
 		saveConfig();
 		loadConfig();
 		loadStaticHelper(MessageHelper.class, getFileConfig("messages.yml"), true);
-		graveyardManager.loadGraveyards(this);
+		graveyardManager = new GraveyardManager();
+		graveyardManager.loadGraveyards();
+		deathChestManager = new DeathChestManager();
+		deathChestManager.load(true);
 		registerPlugin();
 	}
 
 	private void loadConfig(){
 		FileConfiguration config = getConfig();
-		properties.useRespawnGUI = config.getBoolean("useRespawnGUI");
-		properties.useDiscovery = config.getBoolean("useDiscovery");
-		properties.respawnParticleEffect = Particle.valueOf(config.getString("respawnParticleEffect"));
+		if(ConfigHelper.ConfigContainsPath(config, "useRespawnGUI"))
+			properties.UseRespawnGUI = config.getBoolean("useRespawnGUI");
+		if(ConfigHelper.ConfigContainsPath(config, "useDiscovery"))
+			properties.UseDiscovery = config.getBoolean("useDiscovery");
+		if(ConfigHelper.ConfigContainsPath(config, "respawnParticleEffect"))
+			properties.RespawnParticleEffect = Particle.valueOf(config.getString("respawnParticleEffect"));
+		if(ConfigHelper.ConfigContainsPath(config, "DisabledWorlds"))
+		    properties.DisabledGraveyardWorlds = config.getStringList("DisabledGraveyardWorlds");
+		loadDeathChest(config);
+	}
+
+	private void loadDeathChest(FileConfiguration config){
+		Properties.DeathChestProperties properties = Properties.DeathChestProperties;
+
+		if(ConfigHelper.ConfigContainsPath(config, "DeathChest.Enabled"))
+			properties.Enabled = config.getBoolean("DeathChest.Enabled");
+		else {
+			config.set("DeathChest.Enabled", false);
+			saveConfig();
+			properties.Enabled = false;
+		}
+		if(ConfigHelper.ConfigContainsPath(config, "DeathChest.ValidDuration"))
+			properties.ValidDuration = config.getInt("DeathChest.ValidDuration");
+		else {
+			config.set("DeathChest.ValidDuration", 10);
+			saveConfig();
+			properties.ValidDuration = 10;
+		}
+		if(ConfigHelper.ConfigContainsPath(config, "DeathChest.DeathChestParticleEffect"))
+			properties.ParticleEffect = Particle.valueOf(config.getString("DeathChest.DeathChestParticleEffect"));
+		else {
+			config.set("DeathChest.DeathChestParticleEffect", "END_ROD");
+			saveConfig();
+			properties.ParticleEffect = Particle.END_ROD;
+		}
+		if(ConfigHelper.ConfigContainsPath(config, "DeathChest.ExpStoragePercent"))
+			properties.ExpStoragePercentage = config.getDouble("DeathChest.ExpStoragePercent");
+		else {
+			config.set("DeathChest.ExpStoragePercent", "50.0");
+			saveConfig();
+			properties.ExpStoragePercentage = 50.0;
+		}
+        if(ConfigHelper.ConfigContainsPath(config, "DeathChest.DisabledWorlds"))
+            properties.DisabledWorlds = config.getStringList("DeathChest.DisabledWorlds");
+        else {
+            ArrayList<String> worlds = new ArrayList<String>(){{ add("ExampleWorld"); }};
+            config.set("DeathChest.DisabledWorlds", worlds);
+            saveConfig();
+            properties.DisabledWorlds = worlds;
+        }
 	}
 
     private void firstLoad(){
@@ -80,7 +137,9 @@ public class RPGraveyards extends JavaPlugin {
 
 	private void registerListeners()
 	{
-		getServer().getPluginManager().registerEvents(new GraveyardListener(), this);
+		Bukkit.getPluginManager().registerEvents(new GraveyardListener(), this);
+		if(properties.DeathChestProperties.Enabled)
+			Bukkit.getPluginManager().registerEvents(new DeathChestListener(), this);
 	}
 
 	private void loadStaticHelper(Class clazz, FileConfiguration config, boolean allowColorCodes){

@@ -1,6 +1,7 @@
 package me.TheNukeDude.Tasks;
 
 import me.TheNukeDude.Data.Graveyard;
+import me.TheNukeDude.Data.Properties;
 import me.TheNukeDude.Managers.GraveyardManager;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -21,6 +22,8 @@ public class PlayerDiscoverTask extends BukkitRunnable {
     public void run() {
         if(!player.isOnline())
             this.cancel();
+        if(Properties.DisabledGraveyardWorlds.contains(player.getWorld().getName()))
+            return;
 
         graveyards = GraveyardManager.GetGraveyardsOfWorld(player.getWorld());
 

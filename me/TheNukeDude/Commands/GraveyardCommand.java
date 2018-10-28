@@ -1,8 +1,10 @@
 package me.TheNukeDude.Commands;
 
+import me.TheNukeDude.Data.DeathChestInventory;
 import me.TheNukeDude.Data.Graveyard;
 import me.TheNukeDude.Managers.GraveyardManager;
 import me.TheNukeDude.RPGraveyards;
+import me.TheNukeDude.Util.InventorySerializer;
 import me.TheNukeDude.Util.OutputHandler;
 import me.TheNukeDude.Util.TryParse;
 import org.bukkit.ChatColor;
@@ -10,11 +12,15 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class GraveyardCommand implements CommandExecutor {
+
+    private static HashMap<Player, DeathChestInventory> deathChestInventories = new HashMap<>();
 
 	@SuppressWarnings("serial")
 	private ArrayList<String> commands = new ArrayList<String>(){{

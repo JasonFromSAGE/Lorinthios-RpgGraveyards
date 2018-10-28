@@ -8,7 +8,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 public class GraveyardRespawnParticleTask extends BukkitRunnable {
 
-    private Particle particle = RPGraveyards.properties.respawnParticleEffect;
+    private Particle particle = RPGraveyards.properties.RespawnParticleEffect;
     private double rotation = 0.0;
     private double rotationChange = Math.PI / 20.0;
     private double rotationOffset = Math.PI * 2.0 / 3.0;

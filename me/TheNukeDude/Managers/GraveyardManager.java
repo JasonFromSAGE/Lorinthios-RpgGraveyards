@@ -14,10 +14,15 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class GraveyardManager {
-	private static HashMap<Integer, Graveyard> graveyards = new HashMap<>();
-	private static HashMap<World, List<Graveyard>> worldGraveyards = new HashMap<>();
+	private static HashMap<Integer, Graveyard> graveyards;
+	private static HashMap<World, List<Graveyard>> worldGraveyards;
 	private static int ID = 0;
-	
+
+	public GraveyardManager(){
+		graveyards = new HashMap<>();
+		worldGraveyards = new HashMap<>();
+	}
+
 	public static List<Graveyard> GetGraveyardsOfWorld(World world)
 	{
 		if (worldGraveyards.containsKey(world))
@@ -27,12 +32,12 @@ public class GraveyardManager {
 		return new ArrayList<>();
 	}
 	
-	public void loadGraveyards(RPGraveyards plugin)
+	public void loadGraveyards()
 	{
 		graveyards = new HashMap<>();
 		worldGraveyards = new HashMap<>();
 
-		File file = new File(plugin.getDataFolder(), "graveyards.yml");
+		File file = new File(RPGraveyards.instance.getDataFolder(), "graveyards.yml");
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 		ID = config.getInt("ID");
 		if (config.contains("Graveyards"))

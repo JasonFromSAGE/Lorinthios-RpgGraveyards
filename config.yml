@@ -1,3 +1,27 @@
+##########
+# config.yml
+#
+# useRespawnGUI: (true / false) Do you want to use the GUI to teleport to closest graveyard? (Works with home systems)
+# useDiscovery: (true / false) Do you want your graveyards to use the discovery system? (Within # of blocks to 'learn' a graveyard)
+# respawnParticleEffect: Particle effect you want displayed on respawn (Shows in a triple spiral around player)
+#
+# DeathChest
+#   Enabled: Do you want to store users inventory in a chest on death?
+#   ValidDuration: How long do you want that chest to persist in minutes? (-1 for infinite)
+#   DeathChestParticleEffect: Particle displayed as a beam for the owning player
+#   ExpStoragePercent: Percentage of the players experience you want to store in the death chest (between 0.0 and 100.0)
+ #  DisabledWorlds: Any worlds listed here will have players drop items on death
+##########
+
 useRespawnGUI: true # Use the Graveyard GUI to teleport to graveyards
 useDiscovery: true # Do you want your graveyards to be discoverable?
-respawnParticleEffect: END_ROD
+respawnParticleEffect: END_ROD # Particle effect on respawn
+DisabledGraveyardWorlds:
+- world_the_end
+DeathChest:
+  Enabled: false # Do you want to store users inventory in a chest on death?
+  ValidDuration: 10 # How long do you want that chest to persist? (-1 for infinite)
+  DeathChestParticleEffect: END_ROD # Particle displayed as a beam for the owning player
+  ExpStoragePercent: 50.0 # Percentage of the players experience you want to store in the death chest (between 0.0 and 100.0)
+  DisabledWorlds: # Any worlds listed here will have players drop items on death
+  - world_the_end
