@@ -2,6 +2,7 @@ name: RPGraveyards
 description: Sets graveyard spawnpoints.
 version: 2.2.0
 main: me.TheNukeDude.RPGraveyards
+api-version: 1.14
 commands:
   gy:
     aliases: [graveyard]

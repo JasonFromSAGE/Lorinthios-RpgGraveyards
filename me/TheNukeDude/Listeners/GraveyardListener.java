@@ -7,12 +7,10 @@ import me.TheNukeDude.GUI.GraveyardGUI;
 import me.TheNukeDude.Managers.GraveyardManager;
 import me.TheNukeDude.RPGraveyards;
 import me.TheNukeDude.Tasks.PlayerDiscoverTask;
-import me.TheNukeDude.Util.OutputHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
@@ -30,7 +28,7 @@ public class GraveyardListener implements Listener{
 	public void onPlayerRespawn(PlayerRespawnEvent e)
 	{
 		Player player = e.getPlayer();
-		if(Properties.DisabledGraveyardWorlds.contains(player.getWorld().getName()))
+		if(Properties.DisabledGraveyardWorlds != null && Properties.DisabledGraveyardWorlds.contains(player.getWorld().getName()))
 			return;
 
 		Graveyard selected = null;
